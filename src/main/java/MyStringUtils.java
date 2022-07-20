@@ -1,19 +1,21 @@
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
 
 public class MyStringUtils {
-    public static String join(@Nullable String delimiter, @Nullable String... params) {
+    public static String join(String delimiter, String... params) {
         // не выделялась лишняя память - не создавалось промежуточных строк
         // обрабатывались краевые случаи
 
+        StringBuilder str = new StringBuilder();
         if (delimiter != null && params != null) {
             for (int i = 0; i < params.length; i++) {
-                System.out.print(params[i] + delimiter);
+                if (i != params.length - 1) {
+                    str.append(params[i]);
+                    str.append(delimiter);
+                } else if (params[i] != null) {
+                    str.append(params[i]);
+                }
             }
         }
-
-        return "";
+        return str.toString();
     }
 
     public static void main(String[] args) {
@@ -23,28 +25,32 @@ public class MyStringUtils {
         stringBuilder.append("sdf3");
         stringBuilder.append("sdf4");
         System.out.println(stringBuilder.toString());
+
         MyStringBuilder stringBuilderTwo = new MyStringBuilder(4);
         stringBuilderTwo.append("sdf1");
         stringBuilderTwo.append("sdf2");
         stringBuilderTwo.append("sdf3");
         System.out.println(stringBuilderTwo.toString());
+
         MyStringBuilder stringBuilderThree = new MyStringBuilder(4);
         stringBuilderThree.append(null);
         stringBuilderThree.append(null);
         stringBuilderThree.append(null);
         System.out.println(stringBuilderThree.toString());
 
-        join(" ", stringBuilder.toString());
+        System.out.println(join(" ", stringBuilder.getMyStringBuilder()));
     }
 
     public static class MyStringBuilder {
         String[] strings;
+        public int capacity;
 
         public MyStringBuilder() {
             strings = new String[1];
         }
 
         public MyStringBuilder(int capacity) {
+            this.capacity = capacity;
             strings = new String[capacity];
         }
 
@@ -68,12 +74,21 @@ public class MyStringUtils {
             }
         }
 
+        String[] getMyStringBuilder() {
+            return strings;
+        }
+
         public String toString() {
-            String str = "";
+            StringBuilder str = new StringBuilder();
             for (int i = 0; i < strings.length; i++) {
-                str = strings[i];
+                if (i != strings.length - 1) {
+                    str.append(strings[i]);
+                    str.append(" ");
+                } else if (strings[i] != null) {
+                    str.append(strings[i]);
+                }
             }
-            return str;
+            return str.toString();
         }
     }
 }
