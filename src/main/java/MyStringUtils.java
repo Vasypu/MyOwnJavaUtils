@@ -4,18 +4,18 @@ public class MyStringUtils {
         // не выделялась лишняя память - не создавалось промежуточных строк
         // обрабатывались краевые случаи
 
-        StringBuilder str = new StringBuilder();
+        String str = "";
         if (delimiter != null && params != null) {
             for (int i = 0; i < params.length; i++) {
                 if (i != params.length - 1) {
-                    str.append(params[i]);
-                    str.append(delimiter);
+                    str += (params[i]);
+                    str += (delimiter);
                 } else if (params[i] != null) {
-                    str.append(params[i]);
+                    str += (params[i]);
                 }
             }
         }
-        return str.toString();
+        return str;
     }
 
     public static void main(String[] args) {
@@ -24,21 +24,27 @@ public class MyStringUtils {
         stringBuilder.append("sdf2");
         stringBuilder.append("sdf3");
         stringBuilder.append("sdf4");
-        System.out.println(stringBuilder.toString());
+        System.out.println(stringBuilder);
 
         MyStringBuilder stringBuilderTwo = new MyStringBuilder(4);
         stringBuilderTwo.append("sdf1");
         stringBuilderTwo.append("sdf2");
         stringBuilderTwo.append("sdf3");
-        System.out.println(stringBuilderTwo.toString());
+        stringBuilderTwo.append("sdf4");
+        stringBuilderTwo.append("sdf5");
+        stringBuilderTwo.append("sdf6");
+        stringBuilderTwo.append("sdf7");
+        stringBuilderTwo.append("sdf8");
+        System.out.println(stringBuilderTwo);
 
         MyStringBuilder stringBuilderThree = new MyStringBuilder(4);
         stringBuilderThree.append(null);
         stringBuilderThree.append(null);
         stringBuilderThree.append(null);
-        System.out.println(stringBuilderThree.toString());
+        System.out.println(stringBuilderThree);
 
         System.out.println(join(" ", stringBuilder.getMyStringBuilder()));
+
     }
 
     public static class MyStringBuilder {
@@ -46,7 +52,7 @@ public class MyStringUtils {
         public int capacity;
 
         public MyStringBuilder() {
-            strings = new String[1];
+            strings = new String[4];
         }
 
         public MyStringBuilder(int capacity) {
@@ -61,11 +67,12 @@ public class MyStringUtils {
                         strings[i] = str;
                         break;
                     } else if (i == strings.length - 1 && strings[strings.length - 1] != null) {
-                        String[] objects = new String[strings.length + 1];
-                        System.arraycopy(strings, 0, objects, 0, strings.length);
-                        strings = new String[strings.length + 1];
-                        System.arraycopy(objects, 0, strings, 0, objects.length);
-                        strings[strings.length - 1] = str;
+                        String[] newStrings = new String[strings.length * 2];
+                        for (int j = 0; j < strings.length; j++) {
+                            newStrings[j] = strings[j];
+                        }
+                        strings = newStrings;
+                        strings[i + 1] = str;
                         break;
                     }
                 }
@@ -79,16 +86,16 @@ public class MyStringUtils {
         }
 
         public String toString() {
-            StringBuilder str = new StringBuilder();
+            String str = "";
             for (int i = 0; i < strings.length; i++) {
                 if (i != strings.length - 1) {
-                    str.append(strings[i]);
-                    str.append(" ");
+                    str += (strings[i]);
+                    str += (" ");
                 } else if (strings[i] != null) {
-                    str.append(strings[i]);
+                    str += (strings[i]);
                 }
             }
-            return str.toString();
+            return str;
         }
     }
 }
