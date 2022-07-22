@@ -1,21 +1,22 @@
 
 public class MyStringUtils {
+
     public static String join(String delimiter, String... params) {
         // не выделялась лишняя память - не создавалось промежуточных строк
         // обрабатывались краевые случаи
-
-        String str = "";
+        MyStringBuilder builder = null;
         if (delimiter != null && params != null) {
+            builder = new MyStringBuilder(params.length * 2);
             for (int i = 0; i < params.length; i++) {
                 if (i != params.length - 1) {
-                    str += (params[i]);
-                    str += (delimiter);
+                    builder.append(params[i]);
+                    builder.append(delimiter);
                 } else if (params[i] != null) {
-                    str += (params[i]);
+                    builder.append(params[i]);
                 }
             }
         }
-        return str;
+        return builder.toString();
     }
 
     public static void main(String[] args) {
@@ -43,45 +44,46 @@ public class MyStringUtils {
         stringBuilderThree.append(null);
         System.out.println(stringBuilderThree);
 
-        System.out.println(join(" ", stringBuilder.getMyStringBuilder()));
+        MyStringBuilder stringBuilderFour = new MyStringBuilder(4);
+        stringBuilderFour.append("stringBuilderFour1");
+        stringBuilderFour.append("stringBuilderFour2");
+        stringBuilderFour.append("stringBuilderFour3");
+        stringBuilderFour.append("stringBuilderFour4");
+        stringBuilderFour.append("stringBuilderFour5");
+        stringBuilderFour.append("stringBuilderFour6");
+        stringBuilderFour.append("stringBuilderFour7");
+        stringBuilderFour.append("stringBuilderFour8");
+        System.out.println(stringBuilderFour);
 
+        System.out.println(join("!", stringBuilder.getMyStringBuilder()));
     }
 
     public static class MyStringBuilder {
-        String[] strings;
-        public int capacity;
+        private String[] strings;
+        private int fullCapacity = 0;
 
         public MyStringBuilder() {
             strings = new String[4];
         }
 
         public MyStringBuilder(int capacity) {
-            this.capacity = capacity;
             strings = new String[capacity];
         }
 
         public void append(String str) {
             if (str != null) {
-                for (int i = 0; i < strings.length; i++) {
-                    if (strings[i] == null) {
-                        strings[i] = str;
-                        break;
-                    } else if (i == strings.length - 1 && strings[strings.length - 1] != null) {
-                        String[] newStrings = new String[strings.length * 2];
-                        for (int j = 0; j < strings.length; j++) {
-                            newStrings[j] = strings[j];
-                        }
-                        strings = newStrings;
-                        strings[i + 1] = str;
-                        break;
-                    }
+                if (fullCapacity >= strings.length) {
+                    String[] newStrings = new String[strings.length * 2];
+                    System.arraycopy(strings, 0, newStrings, 0, strings.length);
+                    strings = newStrings;
                 }
+                strings[fullCapacity++] = str;
             } else {
                 System.out.println("Значение не может быть null");
             }
         }
 
-        String[] getMyStringBuilder() {
+        public String[] getMyStringBuilder() {
             return strings;
         }
 
@@ -90,12 +92,12 @@ public class MyStringUtils {
             for (int i = 0; i < strings.length; i++) {
                 if (i != strings.length - 1) {
                     str += (strings[i]);
-                    str += (" ");
                 } else if (strings[i] != null) {
                     str += (strings[i]);
                 }
             }
             return str;
         }
+
     }
 }
