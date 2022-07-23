@@ -1,4 +1,3 @@
-
 public class MyStringUtils {
 
     public static String join(String delimiter, String... params) {
@@ -71,16 +70,21 @@ public class MyStringUtils {
         }
 
         public void append(String str) {
-            if (str != null) {
-                if (fullCapacity >= strings.length) {
-                    String[] newStrings = new String[strings.length * 2];
-                    System.arraycopy(strings, 0, newStrings, 0, strings.length);
-                    strings = newStrings;
-                }
-                strings[fullCapacity++] = str;
-            } else {
-                System.out.println("Значение не может быть null");
+            if (str == null) return;
+            if (fullCapacity >= strings.length) {
+                String[] newStrings = new String[strings.length * 2];
+                System.arraycopy(strings, 0, newStrings, 0, strings.length);
+                strings = newStrings;
             }
+            strings[fullCapacity++] = str;
+        }
+
+        void doSome() {
+            char[] chars = null;
+            for (String string : strings) {
+                chars = string.toCharArray();
+            }
+            String s = new String(chars);
         }
 
         public String[] getMyStringBuilder() {
