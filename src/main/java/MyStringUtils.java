@@ -3,16 +3,14 @@ public class MyStringUtils {
     public static String join(String delimiter, String... params) {
         // не выделялась лишняя память - не создавалось промежуточных строк
         // обрабатывались краевые случаи
-        MyStringBuilder builder = null;
-        if (delimiter != null && params != null) {
-            builder = new MyStringBuilder(params.length * 2);
-            for (int i = 0; i < params.length; i++) {
-                if (i != params.length - 1) {
-                    builder.append(params[i]);
-                    builder.append(delimiter);
-                } else if (params[i] != null) {
-                    builder.append(params[i]);
-                }
+        if (delimiter == null || params == null) return "";
+        MyStringBuilder builder = new MyStringBuilder(params.length * 2);
+        for (int i = 0; i < params.length; i++) {
+            if (i != params.length - 1) {
+                builder.append(params[i]);
+                builder.append(delimiter);
+            } else if (params[i] != null) {
+                builder.append(params[i]);
             }
         }
         return builder.toString();
@@ -20,7 +18,7 @@ public class MyStringUtils {
 
     public static void main(String[] args) {
         MyStringBuilder stringBuilder = new MyStringBuilder();
-        stringBuilder.append("sdf1");
+        stringBuilder.append("sdf14");
         stringBuilder.append("sdf2");
         stringBuilder.append("sdf3");
         stringBuilder.append("sdf4");
@@ -41,7 +39,7 @@ public class MyStringUtils {
         stringBuilderThree.append(null);
         stringBuilderThree.append(null);
         stringBuilderThree.append(null);
-        System.out.println(stringBuilderThree);
+        System.out.println("пустой stringBuilderThree " + stringBuilderThree);
 
         MyStringBuilder stringBuilderFour = new MyStringBuilder(4);
         stringBuilderFour.append("stringBuilderFour1");
@@ -55,11 +53,12 @@ public class MyStringUtils {
         System.out.println(stringBuilderFour);
 
         System.out.println(join("!", stringBuilder.getMyStringBuilder()));
+        System.out.println(stringBuilder.toString());
     }
 
     public static class MyStringBuilder {
         private String[] strings;
-        private int fullCapacity = 0;
+        private int capacity = 0;
 
         public MyStringBuilder() {
             strings = new String[4];
@@ -70,21 +69,31 @@ public class MyStringUtils {
         }
 
         public void append(String str) {
-            if (str == null) return;
-            if (fullCapacity >= strings.length) {
+            if (str == null) {
+                System.out.println("Значения не могут быть null");
+                return;
+            }
+            if (capacity >= strings.length) {
                 String[] newStrings = new String[strings.length * 2];
                 System.arraycopy(strings, 0, newStrings, 0, strings.length);
                 strings = newStrings;
             }
-            strings[fullCapacity++] = str;
+            strings[capacity++] = str;
         }
 
-        void doSome() {
-            char[] chars = null;
-            for (String string : strings) {
-                chars = string.toCharArray();
+        String doSome() {
+            int cap = 0;
+            for (int i = 0; i < strings.length; i++) {
+                cap += strings[i].length();
             }
-            String s = new String(chars);
+
+            int endRecord = 0;
+            char[] chars = new char[cap];
+            for (String string : strings) {
+                System.arraycopy(string.toCharArray(), 0, chars, endRecord, string.toCharArray().length);
+                endRecord += string.toCharArray().length;
+            }
+            return new String(chars);
         }
 
         public String[] getMyStringBuilder() {
@@ -92,16 +101,21 @@ public class MyStringUtils {
         }
 
         public String toString() {
-            String str = "";
-            for (int i = 0; i < strings.length; i++) {
-                if (i != strings.length - 1) {
-                    str += (strings[i]);
-                } else if (strings[i] != null) {
-                    str += (strings[i]);
-                }
+//            if (strings[0] == null) {
+//                return "";
+//            }
+            int cap = 0;
+            for (String s : strings) {
+                cap += s.length();
             }
-            return str;
-        }
 
+            int endRecord = 0;
+            char[] chars = new char[cap];
+            for (String string : strings) {
+                System.arraycopy(string.toCharArray(), 0, chars, endRecord, string.toCharArray().length);
+                endRecord += string.toCharArray().length;
+            }
+            return new String(chars);
+        }
     }
 }
