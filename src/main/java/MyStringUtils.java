@@ -52,8 +52,9 @@ public class MyStringUtils {
         stringBuilderFour.append("stringBuilderFour8");
         System.out.println(stringBuilderFour);
 
-        System.out.println(join("!", stringBuilder.getMyStringBuilder()));
-        System.out.println(stringBuilder.toString());
+        System.out.println(join(" ! ", stringBuilder.getMyStringBuilder()));
+        System.out.println(stringBuilder);
+
     }
 
     public static class MyStringBuilder {
@@ -81,41 +82,29 @@ public class MyStringUtils {
             strings[capacity++] = str;
         }
 
-        String doSome() {
-            int cap = 0;
-            for (int i = 0; i < strings.length; i++) {
-                cap += strings[i].length();
-            }
-
-            int endRecord = 0;
-            char[] chars = new char[cap];
-            for (String string : strings) {
-                System.arraycopy(string.toCharArray(), 0, chars, endRecord, string.toCharArray().length);
-                endRecord += string.toCharArray().length;
-            }
-            return new String(chars);
-        }
-
         public String[] getMyStringBuilder() {
             return strings;
         }
 
         public String toString() {
-//            if (strings[0] == null) {
-//                return "";
-//            }
             int cap = 0;
             for (String s : strings) {
-                cap += s.length();
+                if (s != null)
+                    cap += s.length();
             }
 
+            if (cap == 0) return "null";
             int endRecord = 0;
             char[] chars = new char[cap];
             for (String string : strings) {
-                System.arraycopy(string.toCharArray(), 0, chars, endRecord, string.toCharArray().length);
-                endRecord += string.toCharArray().length;
+                if (string != null) {
+                    for (int i = 0; i < string.length(); i++) {
+                        chars[endRecord++] = string.charAt(i);
+                    }
+                }
             }
             return new String(chars);
         }
+
     }
 }
