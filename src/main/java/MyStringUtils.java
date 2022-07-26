@@ -60,6 +60,7 @@ public class MyStringUtils {
     public static class MyStringBuilder {
         private String[] strings;
         private int capacity = 0;
+        private int stringLength = 0;
 
         public MyStringBuilder() {
             strings = new String[4];
@@ -80,6 +81,7 @@ public class MyStringUtils {
                 strings = newStrings;
             }
             strings[capacity++] = str;
+            stringLength += str.length();
         }
 
         public String[] getMyStringBuilder() {
@@ -87,20 +89,13 @@ public class MyStringUtils {
         }
 
         public String toString() {
-            int cap = 0;
-            for (String s : strings) {
-                if (s != null)
-                    cap += s.length();
-            }
-
-            if (cap == 0) return "null";
+            if (stringLength == 0) return "";
             int endRecord = 0;
-            char[] chars = new char[cap];
-            for (String string : strings) {
-                if (string != null) {
-                    for (int i = 0; i < string.length(); i++) {
-                        chars[endRecord++] = string.charAt(i);
-                    }
+            char[] chars = new char[stringLength];
+            for (int j = 0; j < capacity; j++) {
+                String string = strings[j];
+                for (int i = 0; i < string.length(); i++) {
+                    chars[endRecord++] = string.charAt(i);
                 }
             }
             return new String(chars);
