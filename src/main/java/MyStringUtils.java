@@ -55,6 +55,17 @@ public class MyStringUtils {
         System.out.println(join(" ! ", stringBuilder.getMyStringBuilder()));
         System.out.println(stringBuilder);
 
+        StringBuilder builder = new StringBuilder(14);
+        builder.append("some1");
+        builder.append("some2");
+        builder.append("some3");
+        builder.append("some4");
+        System.out.println(builder);
+        builder.insert(6, "NewStr");
+        System.out.println(builder);
+
+        stringBuilderTwo.insert(4, "sad");
+        System.out.println(stringBuilderTwo);
     }
 
     public static class MyStringBuilder {
@@ -82,6 +93,21 @@ public class MyStringUtils {
             }
             strings[capacity++] = str;
             stringLength += str.length();
+        }
+
+        public void insert(int offset, String str) {
+            String[] newStrings = new String[strings.length + 1];
+            capacity++;
+            stringLength += str.length();
+            int some = 0;
+            for (int i = 0; i < newStrings.length; i++) {
+                if (i == offset) {
+                    newStrings[i] = str;
+                } else {
+                    newStrings[i] = strings[some++];
+                }
+            }
+            strings = newStrings;
         }
 
         public String[] getMyStringBuilder() {
