@@ -61,11 +61,14 @@ public class MyStringUtils {
         builder.append("some3");
         builder.append("some4");
         System.out.println(builder);
-        builder.insert(6, "NewStr");
+        builder.insert(20, "NewStr");
         System.out.println(builder);
 
-        stringBuilderTwo.insert(4, "sad");
+        stringBuilderTwo.insertTwo(32, "sad");
         System.out.println(stringBuilderTwo);
+        stringBuilderTwo.insertTwo(4, "!!!");
+
+        stringBuilderTwo.insertThree(0, "SomeSome");
     }
 
     public static class MyStringBuilder {
@@ -99,15 +102,92 @@ public class MyStringUtils {
             String[] newStrings = new String[strings.length + 1];
             capacity++;
             stringLength += str.length();
-            int some = 0;
+            int stringsItem = 0;
             for (int i = 0; i < newStrings.length; i++) {
                 if (i == offset) {
                     newStrings[i] = str;
                 } else {
-                    newStrings[i] = strings[some++];
+                    newStrings[i] = strings[stringsItem++];
                 }
             }
             strings = newStrings;
+        }
+
+        public void insertTwo(int offset, String str) {
+            int endRecord = 0;
+            char[] chars = new char[stringLength + str.length()];
+            if (offset < chars.length - str.length()) {
+                for (String string : strings) {
+                    for (int i = 0; i < string.length(); i++) {
+                        if (endRecord == offset) {
+                            endRecord = writeNewStr(chars, endRecord, str);
+                            i--;
+                        } else {
+                            chars[endRecord++] = string.charAt(i);
+                        }
+                    }
+                }
+            } else {
+                for (String string : strings) {
+                    for (int i = 0; i < string.length(); i++) {
+                        chars[endRecord++] = string.charAt(i);
+                    }
+                }
+                writeNewStr(chars, endRecord, str);
+            }
+            System.out.println("новый массив " + new String(chars));
+        }
+
+        private Integer writeNewStr(char[] chars, int endRecord, String str) {
+            for (int k = 0; k < str.length(); k++) {
+                chars[endRecord++] = str.charAt(k);
+            }
+            return endRecord;
+        }
+
+        public void insertThree(int offset, String str) {
+            String[] newStrings = new String[strings.length + 1];
+            capacity++;
+            stringLength += str.length();
+            int stringsItem = 0;
+            int countLength = 0;
+            int remainStrLength = 0;
+            for (int i = 0; i < newStrings.length; i++) {
+                countLength += strings[stringsItem].length();
+                if (offset <= countLength) {
+                    countLength -= strings[stringsItem].length();
+                    for (int j = 0; j < strings[stringsItem].length(); j++) {
+                        if (countLength != 0)
+                            countLength++;
+                        if (countLength == offset) {
+                            if (j == 0) {
+                                newStrings[i++] = str;
+                                break;
+                            }
+                            char[] chars = new char[j];
+                            for (int k = 0; k < chars.length; k++) {
+                                chars[k] = strings[stringsItem].charAt(k);
+                                remainStrLength = k + 1;
+                            }
+                            String s = new String(chars);
+                            newStrings[i++] = s;
+                            chars = new char[strings[stringsItem].length() - remainStrLength];
+                            for (int d = 0, k = remainStrLength; k < strings[stringsItem].length(); k++) {
+                                chars[d++] = strings[stringsItem].charAt(k);
+                            }
+                            s = str + new String(chars);
+                            newStrings[i++] = s;
+                        }
+                    }
+
+//                    newStrings[i++] = str;
+                }
+                newStrings[i] = strings[stringsItem++];
+            }
+
+            for (String newString : newStrings) {
+                System.out.println(newString);
+            }
         }
 
         public String[] getMyStringBuilder() {
