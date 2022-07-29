@@ -68,13 +68,14 @@ public class MyStringUtils {
         System.out.println(stringBuilderTwo);
         stringBuilderTwo.insertTwo(4, "!!!");
 
-        stringBuilderTwo.insertThree(0, "SomeSome");
+        stringBuilderTwo.insertThree(5, "SomeSome");
     }
 
     public static class MyStringBuilder {
         private String[] strings;
         private int capacity = 0;
         private int stringLength = 0;
+        private int fullLength = 0;
 
         public MyStringBuilder() {
             strings = new String[4];
@@ -188,6 +189,31 @@ public class MyStringUtils {
             for (String newString : newStrings) {
                 System.out.println(newString);
             }
+        }
+
+        void insertFour(int offset, String str) {
+            int indexPos = 0;
+            outer:
+                for (int i = 0; i < strings.length; i++) {
+                    for (int j = 0; j < strings[i].length(); j++) {
+                        if (indexPos == offset) {
+                            for (int k = strings.length - 1; k > i; k--) {
+                                strings[k] = strings[k - 1];
+                            }
+                            strings[i] = str;
+                            break outer;
+                        }
+                        indexPos++;
+                    }
+                }
+
+            for (String string : strings) {
+                System.out.println(string);
+            }
+        }
+
+        public Integer getFullLength() {
+            return strings.length;
         }
 
         public String[] getMyStringBuilder() {
