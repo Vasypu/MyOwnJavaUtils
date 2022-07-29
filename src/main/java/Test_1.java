@@ -4,7 +4,8 @@ public class Test_1 {
         builder_5.append("000");
         builder_5.append("111");
         builder_5.append("222");
+        builder_5.append("333");
         System.out.println(builder_5);
-        builder_5.insertFour(8, "333");
+        builder_5.insertFour(5, "444");
     }
 }

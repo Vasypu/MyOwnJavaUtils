@@ -193,19 +193,44 @@ public class MyStringUtils {
 
         void insertFour(int offset, String str) {
             int indexPos = 0;
-            outer:
-                for (int i = 0; i < strings.length; i++) {
+            int strCounter = 0;
+            int posInStr = 0;
+
+            for (int i = 0; i < strings.length; i++) {
+                if (strings[i] != null) {
                     for (int j = 0; j < strings[i].length(); j++) {
                         if (indexPos == offset) {
-                            for (int k = strings.length - 1; k > i; k--) {
-                                strings[k] = strings[k - 1];
-                            }
-                            strings[i] = str;
-                            break outer;
+                            strCounter = i;
+                            posInStr = j;
                         }
                         indexPos++;
                     }
                 }
+            }
+
+            if (offset >= stringLength) {
+                append(str);
+            } else {
+                if (strings.length - capacity < 2) {
+                    String[] newStrings = new String[strings.length * 2];
+                    System.arraycopy(strings, 0, newStrings, 0, strings.length);
+                    strings = newStrings;
+                }
+
+                if (posInStr == 0) {
+                    for (int k = strings.length - 1; k > strCounter; k--) {
+                        strings[k] = strings[k - 1];
+                    }
+                    strings[strCounter] = str;
+                } else {
+                    for (int k = capacity; k > strCounter; k--) {
+                        strings[k + 1] = strings[k - 1];
+                    }
+                    strings[strCounter + 1] = str;
+                    strings[strCounter + 2] = strings[strCounter].substring(posInStr);
+                    strings[strCounter] = strings[strCounter].substring(0, posInStr);
+                }
+            }
 
             for (String string : strings) {
                 System.out.println(string);
