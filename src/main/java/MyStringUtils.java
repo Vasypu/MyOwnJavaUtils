@@ -72,7 +72,7 @@ public class MyStringUtils {
     }
 
     public static class MyStringBuilder {
-        private String[] strings;
+        private static String[] strings;
         private int capacity = 0;
         private int stringLength = 0;
         private int fullLength = 0;
@@ -91,27 +91,10 @@ public class MyStringUtils {
                 return;
             }
             if (capacity >= strings.length) {
-                String[] newStrings = new String[strings.length * 2];
-                System.arraycopy(strings, 0, newStrings, 0, strings.length);
-                strings = newStrings;
+                ensureCapacity(strings.length * 2);
             }
             strings[capacity++] = str;
             stringLength += str.length();
-        }
-
-        public void insert(int offset, String str) {
-            String[] newStrings = new String[strings.length + 1];
-            capacity++;
-            stringLength += str.length();
-            int stringsItem = 0;
-            for (int i = 0; i < newStrings.length; i++) {
-                if (i == offset) {
-                    newStrings[i] = str;
-                } else {
-                    newStrings[i] = strings[stringsItem++];
-                }
-            }
-            strings = newStrings;
         }
 
         public void insertTwo(int offset, String str) {
@@ -191,54 +174,50 @@ public class MyStringUtils {
             }
         }
 
-        void insertFour(int offset, String str) {
+        public void insert(int offset, String str) {
             int indexPos = 0;
             int strCounter = 0;
             int posInStr = 0;
 
-            for (int i = 0; i < strings.length; i++) {
-                if (strings[i] != null) {
-                    for (int j = 0; j < strings[i].length(); j++) {
-                        if (indexPos == offset) {
-                            strCounter = i;
-                            posInStr = j;
-                        }
-                        indexPos++;
-                    }
-                }
-            }
-
             if (offset >= stringLength) {
                 append(str);
+                return;
+            }
+
+            for (int i = 0; i < capacity; i++) {
+                for (int j = 0; j < strings[i].length(); j++) {
+                    if (indexPos == offset) {
+                        strCounter = i;
+                        posInStr = j;
+                    }
+                    indexPos++;
+                }
+            }
+
+            if (strings.length - capacity <= 1) {
+                ensureCapacity(strings.length * 2);
+            }
+
+            if (posInStr == 0) {
+                if (strings.length - 1 - strCounter >= 0)
+                    System.arraycopy(strings, strCounter, strings, strCounter + 1, strings.length - 1 - strCounter);
+                strings[strCounter] = str;
             } else {
-                if (strings.length - capacity < 2) {
-                    String[] newStrings = new String[strings.length * 2];
-                    System.arraycopy(strings, 0, newStrings, 0, strings.length);
-                    strings = newStrings;
-                }
-
-                if (posInStr == 0) {
-                    for (int k = strings.length - 1; k > strCounter; k--) {
-                        strings[k] = strings[k - 1];
-                    }
-                    strings[strCounter] = str;
-                } else {
-                    for (int k = capacity; k > strCounter; k--) {
-                        strings[k + 1] = strings[k - 1];
-                    }
-                    strings[strCounter + 1] = str;
-                    strings[strCounter + 2] = strings[strCounter].substring(posInStr);
-                    strings[strCounter] = strings[strCounter].substring(0, posInStr);
-                }
+                if (capacity - strCounter >= 0)
+                    System.arraycopy(strings, strCounter, strings, strCounter + 1 + 1, capacity - strCounter);
+                strings[strCounter + 1] = str;
+                strings[strCounter + 2] = strings[strCounter].substring(posInStr);
+                strings[strCounter] = strings[strCounter].substring(0, posInStr);
+                capacity++;
             }
-
-            for (String string : strings) {
-                System.out.println(string);
-            }
+            stringLength += str.length();
+            capacity++;
         }
 
-        public Integer getFullLength() {
-            return strings.length;
+        private static void ensureCapacity(int newCapacity) {
+            String[] newStrings = new String[newCapacity];
+            System.arraycopy(strings, 0, newStrings, 0, strings.length);
+            strings = newStrings;
         }
 
         public String[] getMyStringBuilder() {

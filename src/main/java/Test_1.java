@@ -6,6 +6,7 @@ public class Test_1 {
         builder_5.append("222");
         builder_5.append("333");
         System.out.println(builder_5);
-        builder_5.insertFour(5, "444");
+        builder_5.insert(15, "444");
+        System.out.println(builder_5);
     }
 }
