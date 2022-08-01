@@ -64,18 +64,13 @@ public class MyStringUtils {
         builder.insert(20, "NewStr");
         System.out.println(builder);
 
-        stringBuilderTwo.insertTwo(32, "sad");
-        System.out.println(stringBuilderTwo);
-        stringBuilderTwo.insertTwo(4, "!!!");
-
-        stringBuilderTwo.insertThree(5, "SomeSome");
+//        stringBuilderTwo.insertThree(5, "SomeSome");
     }
 
     public static class MyStringBuilder {
-        private static String[] strings;
+        private String[] strings;
         private int capacity = 0;
         private int stringLength = 0;
-        private int fullLength = 0;
 
         public MyStringBuilder() {
             strings = new String[4];
@@ -91,42 +86,10 @@ public class MyStringUtils {
                 return;
             }
             if (capacity >= strings.length) {
-                ensureCapacity(strings.length * 2);
+                strings = ensureCapacity(strings, strings.length * 2);
             }
             strings[capacity++] = str;
             stringLength += str.length();
-        }
-
-        public void insertTwo(int offset, String str) {
-            int endRecord = 0;
-            char[] chars = new char[stringLength + str.length()];
-            if (offset < chars.length - str.length()) {
-                for (String string : strings) {
-                    for (int i = 0; i < string.length(); i++) {
-                        if (endRecord == offset) {
-                            endRecord = writeNewStr(chars, endRecord, str);
-                            i--;
-                        } else {
-                            chars[endRecord++] = string.charAt(i);
-                        }
-                    }
-                }
-            } else {
-                for (String string : strings) {
-                    for (int i = 0; i < string.length(); i++) {
-                        chars[endRecord++] = string.charAt(i);
-                    }
-                }
-                writeNewStr(chars, endRecord, str);
-            }
-            System.out.println("новый массив " + new String(chars));
-        }
-
-        private Integer writeNewStr(char[] chars, int endRecord, String str) {
-            for (int k = 0; k < str.length(); k++) {
-                chars[endRecord++] = str.charAt(k);
-            }
-            return endRecord;
         }
 
         public void insertThree(int offset, String str) {
@@ -195,7 +158,7 @@ public class MyStringUtils {
             }
 
             if (strings.length - capacity <= 1) {
-                ensureCapacity(strings.length * 2);
+                strings = ensureCapacity(strings, strings.length * 2);
             }
 
             if (posInStr == 0) {
@@ -214,10 +177,10 @@ public class MyStringUtils {
             capacity++;
         }
 
-        private static void ensureCapacity(int newCapacity) {
+        private static String[] ensureCapacity(String[] strings, int newCapacity) {
             String[] newStrings = new String[newCapacity];
             System.arraycopy(strings, 0, newStrings, 0, strings.length);
-            strings = newStrings;
+            return newStrings;
         }
 
         public String[] getMyStringBuilder() {
